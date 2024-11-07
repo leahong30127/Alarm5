@@ -35,8 +35,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAlarms"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvTitle"
-        android:layout_marginTop="16dp"/>
+        android:layout_height="492dp"
+        android:layout_below="@+id/btnAddAlarm"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="2dp" />
 
 </RelativeLayout>
