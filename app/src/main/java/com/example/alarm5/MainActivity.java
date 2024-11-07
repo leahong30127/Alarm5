@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Adapter;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -54,25 +56,58 @@ public class MainActivity extends AppCompatActivity {
         alarmAdapter = new AlarmAdapter(alarmList);
         recyclerView.setAdapter(alarmAdapter);
 
-        // 设置长按事件监听器
-        alarmAdapter.setOnItemLongClickListener(position -> {
-            // 从 alarmList 中删除项目
-            alarmList.remove(position);
-            alarmAdapter.notifyItemRemoved(position);
+//        // 设置长按事件监听器
+  //     alarmAdapter.setOnItemClickListener2(position -> {
+           // 从 alarmList 中删除项目
+//            alarmList.remove(position);
+//            alarmAdapter.notifyItemRemoved(position);
+//
+//            // 保存更改后的闹钟数据
+//            saveAlarms();
+//        });
 
-            // 保存更改后的闹钟数据
-            saveAlarms();
+        alarmAdapter.setOnItemLongClickListener(new AlarmAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                // 弹出确认删除的提示框
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("删除闹钟")
+                        .setMessage("您确定要删除这个闹钟吗？")
+                        .setPositiveButton("确认", (dialog, which) -> {
+                            // 删除该条目
+                            alarmList.remove(position);
+                            alarmAdapter.notifyItemRemoved(position);  // 通知适配器删除项
+
+                            // 保存删除后的数据
+                            saveAlarms();
+                            Toast.makeText(MainActivity.this, "闹钟已删除", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("取消", (dialog, which) -> {
+                            dialog.dismiss();  // 取消删除，关闭对话框
+                        })
+                        .create()
+                        .show();  // 显示对话框
+            }
         });
-
         // 加载已保存的闹钟数据
-        loadAlarms();
+       loadAlarms();
 
+//设置点击事件
+        AlarmAdapter.OnItemClickListener2 onItemClickListener = new AlarmAdapter.OnItemClickListener2() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(MainActivity.this, "点击了" + position, Toast.LENGTH_SHORT).show();
+            }
+        };
+        ((AlarmAdapter) recyclerView.getAdapter()).setOnItemClickListener2(onItemClickListener);
 
         btnAddAlarm = findViewById(R.id.btnAddAlarm);
         btnAddAlarm.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AlarmSettingsActivity.class);
             startForResult.launch(intent);
         });
+
+
 
     }
 

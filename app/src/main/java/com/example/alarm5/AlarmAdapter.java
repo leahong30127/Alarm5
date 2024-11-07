@@ -13,21 +13,44 @@ import java.util.List;
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder> {
 
     private List<Alarm> alarmList;
-    private OnItemLongClickListener longClickListener;
+
+
 
     public AlarmAdapter(List<Alarm> alarmList) {
         this.alarmList = alarmList;
     }
 
 
-    // 定义长按接口
+    //定义点击事件接口
+    private OnItemClickListener2 onItemClickListener;
+    public interface OnItemClickListener2 {
+        void onItemClick(int position);
+    }
+
+    //设置点击事件监听器
+    public void setOnItemClickListener2(OnItemClickListener2 onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+     //定义长按接口
+     private OnItemLongClickListener longClickListener;
     public interface OnItemLongClickListener {
         void onItemLongClick(int position);
     }
-
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
         this.longClickListener = listener;
     }
+//    private OnItemLongClickListener longClickListener;
+//    public interface OnItemLongClickListener {
+//        void onItemLongClick(int position);
+//    }
+//
+//    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+//        this.longClickListener = listener;
+//    }
+
+
+
     @NonNull
     @Override
     public AlarmViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,6 +70,21 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
         // 可以为开关设置初始状态或点击事件
         holder.alarmSwitch.setChecked(true);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
+
+        // 设置长按事件
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClick(position);
+                return true;  // 返回 true 表示事件已被处理
+            }
+            return false;
+        });
     }
 
     @Override
@@ -67,4 +105,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
         }
     }
+
+
 }
