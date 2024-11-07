@@ -3,6 +3,7 @@ package com.example.alarm5;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Adapter;
@@ -16,6 +17,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,6 +30,7 @@ import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import android.Manifest;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "AlarmPrefs";
     private static final String KEY_ALARMS = "alarms";
     private AlarmAdapter alarmAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,5 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("TAG", "Read SharedPreferences");
         alarmAdapter.notifyDataSetChanged(); // 通知适配器数据已更改
     }
+
+    
 }
 
