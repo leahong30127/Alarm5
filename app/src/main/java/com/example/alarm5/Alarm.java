@@ -2,19 +2,18 @@ package com.example.alarm5;
 
 import android.text.TextUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
 public class Alarm {
-    private List<String> days;
+    private ArrayList<Integer> days;
     private String time;
 
-    public Alarm(List<String> days, String time) {
+    public Alarm(ArrayList<Integer> days, String time) {
         this.days = days;
         this.time = time;
     }
 
-    public List<String> getDays() {
+    public ArrayList<Integer> getDays() {
         return days;
     }
 
@@ -31,8 +30,21 @@ public class Alarm {
     // 从字符串解析出 Alarm 对象
     public static Alarm fromString(String str) {
         String[] parts = str.split(";");
-        List<String> days = Arrays.asList(parts[0].split(","));
+        // 将 days 的字符串列表转换为 Integer 类型的 ArrayList
+        ArrayList<Integer> days = new ArrayList<>();
+        for (String day : parts[0].split(",")) {
+            days.add(Integer.parseInt(day.trim())); // 转换为整数并添加到 days 中
+        }
         String time = parts[1];
         return new Alarm(days, time);
+    }
+
+    public String getFormattedDays() {
+        StringBuilder sb = new StringBuilder();
+        String[] dayNames = {"日", "一", "二", "三", "四", "五", "六"};
+        for (int day : days) {
+            sb.append(dayNames[day-1]).append(" ");
+        }
+        return sb.toString().trim();
     }
 }

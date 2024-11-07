@@ -6,27 +6,26 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tvTime"
+
+
+        android:id="@+id/alarmTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="9:30"
-        android:textSize="25sp"/>
+        android:text="06:00"
+        android:textSize="32sp"
+        android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/tvDays"
+        android:id="@+id/alarmDays"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_weight="1"
-        android:text="星期一, 星期二"
-        android:textAlignment="textEnd"
-        android:layout_marginRight="10dp"/>
+        android:text="日一二三四五六"
+        android:layout_marginEnd="8dp"/>
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/alarmSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content"/>
 
-        android:textSize="20sp"/>
 
 </LinearLayout>

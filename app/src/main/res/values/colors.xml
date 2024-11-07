@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorSelected">#FF00FF00</color> <!-- 绿色表示选中 -->
+    <color name="colorUnselected">#FFFFFFFF</color> <!-- 白色表示未选中 -->
 </resources>
