@@ -21,10 +21,23 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="选择星期"/>
+        android:text="选择星期1"/>
 
     <!-- Use CheckBoxes or ToggleButtons to select days -->
-
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!-- 星期选择按钮（可以继续扩展） -->
+        <ToggleButton android:id="@+id/toggleSunday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="日" android:textOff="日" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleMonday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="一" android:textOff="一" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleTuesday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="二" android:textOff="二" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleWednesday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="三" android:textOff="三" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleThursday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="四" android:textOff="四" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleFriday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="五" android:textOff="五" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <ToggleButton android:id="@+id/toggleSaturday" android:layout_width="wrap_content" android:layout_weight="1" android:layout_height="wrap_content" android:textOn="六" android:textOff="六" android:padding="4dp"  android:background="@drawable/toggle_button_selector" />
+        <!-- 其他按钮省略 -->
+    </LinearLayout>
     <!-- Additional settings -->
     <TextView
         android:layout_width="wrap_content"

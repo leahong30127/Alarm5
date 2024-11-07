@@ -2,19 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tvDays"
+        android:id="@+id/alarmTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="星期一, 星期二" />
+        android:text="06:00"
+        android:textSize="32sp"
+        android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/tvTime"
+        android:id="@+id/alarmDays"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="9:30" />
+        android:text="日一二三四五六"
+        android:layout_marginEnd="8dp"/>
+
+    <Switch
+        android:id="@+id/alarmSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

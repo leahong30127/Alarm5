@@ -1,9 +1,11 @@
 package com.example.alarm5;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Adapter;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -11,16 +13,21 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Alarm> alarmList = new ArrayList<>(); //用于保存闹钟清单<Alarm>类型 里面有星期几，时间
     private static final String PREFS_NAME = "AlarmPrefs";
     private static final String KEY_ALARMS = "alarms";
+    private AlarmAdapter alarmAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +47,21 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        alarmAdapter = new AlarmAdapter(alarmList);
+        recyclerView.setAdapter(alarmAdapter);
+
+        // 设置长按事件监听器
+        alarmAdapter.setOnItemLongClickListener(position -> {
+            // 从 alarmList 中删除项目
+            alarmList.remove(position);
+            alarmAdapter.notifyItemRemoved(position);
+
+            // 保存更改后的闹钟数据
+            saveAlarms();
         });
 
         // 加载已保存的闹钟数据
@@ -56,19 +80,24 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> startForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
+                @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null) {
-                            List<String> days = data.getStringArrayListExtra("days");
+
+                            ArrayList<Integer> days = data.getIntegerArrayListExtra("days");
                             String time = data.getStringExtra("time");
                             Log.d("TAG1", time);
+                            assert days != null;
+                            Log.d("TAG2", String.valueOf(days));
 
                             // 将新闹钟添加到列表并刷新 RecyclerView
-                            Alarm newAlarm = new Alarm(days, time);
-                            alarmList.add(newAlarm); // 将新闹钟添加到 alarmList
-                            saveAlarms();
+                             Alarm newAlarm = new Alarm(days, time);
+                             alarmList.add(newAlarm); // 将新闹钟添加到 alarmList
+                             saveAlarms();
+                            alarmAdapter.notifyDataSetChanged();
                             // alarmAdapter.addAlarm(newAlarm);
                         }
                     }
@@ -79,13 +108,12 @@ public class MainActivity extends AppCompatActivity {
     private void saveAlarms() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        List<String> alarmStrings = new ArrayList<>();
 
-        for (Alarm alarm : alarmList) {
-            alarmStrings.add(alarm.toString());
-        }
+        // 使用 Gson 将 alarmList 转换为 JSON 字符串
+        Gson gson = new Gson();
+        String json = gson.toJson(alarmList);
 
-        editor.putStringSet(KEY_ALARMS, new HashSet<>(alarmStrings));
+        editor.putString(KEY_ALARMS, json);
         editor.apply();
         Log.d("TAG", "Write SharedPreferences");
     }
@@ -93,21 +121,20 @@ public class MainActivity extends AppCompatActivity {
     // 从 SharedPreferences 加载闹钟数据
     private void loadAlarms() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        Set<String> alarmStrings = prefs.getStringSet(KEY_ALARMS, new HashSet<>());
+        String json = prefs.getString(KEY_ALARMS, null);
 
-        alarmList.clear();
-        for (String alarmString : alarmStrings) {
-            alarmList.add(Alarm.fromString(alarmString));
+        if (json != null) {
+            // 使用 Gson 将 JSON 字符串转换回 List<Alarm>
+            Gson gson = new Gson();
+            List<Alarm> savedAlarms = gson.fromJson(json, new TypeToken<List<Alarm>>() {}.getType());
+            alarmList.clear(); // 清除当前列表中的数据
+            alarmList.addAll(savedAlarms); // 加载保存的闹钟数据
+        } else {
+            alarmList.clear(); // 如果没有数据则清空列表
         }
 
-        Log.d("TAG", "read SharedPreferences");
-        // 输出读取到的闹钟信息
-        for (Alarm alarm : alarmList) {
-            Log.d("TAG", alarm.toString());
-        }
-        ///alarmAdapter.notifyDataSetChanged();
+        Log.d("TAG", "Read SharedPreferences");
+        alarmAdapter.notifyDataSetChanged(); // 通知适配器数据已更改
     }
-
-
 }
 
